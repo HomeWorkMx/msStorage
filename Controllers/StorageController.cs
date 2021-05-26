@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using msStorage.Entities;
 using Microsoft.Extensions.Configuration;
 using Azure.Storage.Blobs;
-
+using System.IO;
 using Azure.Storage.Blobs.Models;
 using ProblemDetails = msStorage.Entities.ProblemDetails;
 using NotFoundResult = msStorage.Entities.NotFoundResult;
@@ -26,18 +26,19 @@ namespace msStorage.Controllers
         }
 
         [HttpPost("PdfDownloadGetNombre")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Azure.Response))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BlobDownloadInfo))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public  async Task<ActionResult<Azure.Response>> PdfDownloadGetNombre(string nombreArchivo, string downloadPath)
+        public  async Task<ActionResult<BlobDownloadInfo>> PdfDownloadGetNombre(string nombreArchivo)
         {
             try
             {
-                if (nombreArchivo == null || downloadPath == null) return BadRequest(ModelState);
+                if (nombreArchivo == null) return BadRequest(ModelState);
                 StorageService miStorageService = new StorageService(_iConfig);
-                var salida = await miStorageService.PdfGetNombre( nombreArchivo,  downloadPath);
+                var salida = await miStorageService.PdfGetNombre( nombreArchivo,  "");
                 if (salida == null) return NotFound();
+
                 return Ok(salida);
             }
             catch (System.Exception ex)

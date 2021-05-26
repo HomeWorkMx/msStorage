@@ -22,7 +22,8 @@ namespace msStorage
         {
             _configuration = _Configuration;
         }
-        public async Task<Azure.Response> PdfGetNombre(string nombreArchivo, string downloadPath)
+       // public async Task<Azure.Response> PdfGetNombre(string nombreArchivo, string downloadPath)
+            public async Task<BlobDownloadInfo> PdfGetNombre(string nombreArchivo, string downloadPath)
         {
             try
             {
@@ -33,13 +34,21 @@ namespace msStorage
                 if (await blob.ExistsAsync())
                 {
 
-                    using (var fileStream = System.IO.File.OpenWrite(downloadPath + "\\"+ nombreArchivo))
+                    /*using (var ms = new MemoryStream())//(var fileStream = System.IO.File.OpenWrite(downloadPath + "\\"+ nombreArchivo))
                     {
-                        var salida = await blob.DownloadToAsync(fileStream);
-                        return salida;
-                    }
+                        //var salida = await blob.DownloadToAsync(fileStream);
+                        await blob.DownloadToAsync(ms);
+                        return ms;//salida; 
+                    }*/
+                    //BlobDownloadInfo download = blob.Download();
+                    //using (MemoryStream stream = new MemoryStream())
+                    //{
+                    //    download.Content.CopyTo(stream);
+                    //    return stream;
+                    //}
+                    BlobDownloadInfo download = blob.Download();
+                    return download;
 
-                   
                 }
                 else {
                     return null;
