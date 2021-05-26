@@ -50,7 +50,7 @@ namespace msStorage
                 throw;
             }
         }
-        public async Task<Azure.Response<Azure.Storage.Blobs.Models.BlobContentInfo>> ImagenSave(string filePath)
+        public async Task<Azure.Response<Azure.Storage.Blobs.Models.BlobContentInfo>> PdfSave(string filePath)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace msStorage
             }
         }
 
-        public async Task<IEnumerable< Azure.Page<BlobItem>>> ImagenGetAll()
+        public async Task<IEnumerable< Azure.Page<BlobItem>>> PdfGetAll()
         {
             try
             {

@@ -25,12 +25,12 @@ namespace msStorage.Controllers
             _iConfig = _Configuration;
         }
 
-        [HttpPost("PdfGetNombre")]
+        [HttpPost("PdfDownloadGetNombre")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Azure.Response))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public  async Task<ActionResult<Azure.Response>> PdfGetNombre(string nombreArchivo, string downloadPath)
+        public  async Task<ActionResult<Azure.Response>> PdfDownloadGetNombre(string nombreArchivo, string downloadPath)
         {
             try
             {
@@ -45,17 +45,17 @@ namespace msStorage.Controllers
                 throw;
             }
         }
-        [HttpPost("ImagenGetAll")]
+        [HttpPost("PdfGetAll")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Azure.Page<BlobItem>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<IEnumerable<Azure.Page<BlobItem>>>> ImagenGetAll()
+        public async Task<ActionResult<IEnumerable<Azure.Page<BlobItem>>>> PdfGetAll()
         {
             try
             {
                 StorageService miStorageService = new StorageService(_iConfig);
-                var salida =  await miStorageService.ImagenGetAll();
+                var salida =  await miStorageService.PdfGetAll();
                 if (salida == null) return NotFound();
                 return Ok(salida);
             }
@@ -66,19 +66,19 @@ namespace msStorage.Controllers
             }
         }
 
-        [HttpPost("ImagenSave")]
+        [HttpPost("PdfSave")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Azure.Response<Azure.Storage.Blobs.Models.BlobContentInfo>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<Task<Azure.Response<Azure.Storage.Blobs.Models.BlobContentInfo>>>> ImagenSave(string filePath)
+        public async Task<ActionResult<Task<Azure.Response<Azure.Storage.Blobs.Models.BlobContentInfo>>>> PdfSave(string filePath)
         {
             try
             {
                 if (filePath == null) return BadRequest(ModelState);
 
                 StorageService miStorageService = new StorageService(_iConfig);
-                var salida = await miStorageService.ImagenSave(filePath);
+                var salida = await miStorageService.PdfSave(filePath);
                 if (salida == null) return NotFound();
                 return Ok(salida);
             }
