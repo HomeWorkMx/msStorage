@@ -22,21 +22,28 @@ namespace msStorage
         {
             _configuration = _Configuration;
         }
-        public async Task<string> ImagenGetId(string id)
+        public async Task<Azure.Response> PdfGetNombre(string nombreArchivo, string downloadPath)
         {
             try
             {
                 string containerName = _configuration.GetValue<string>("AppSettings:ContainerName");
+                string blobName = _configuration.GetValue<string>("AppSettings:PdfBlob");
                 BlobContainerClient container = new BlobContainerClient(_configuration.GetConnectionString("StorageConnectionString"), containerName);
-
-                BlobClient blob = container.GetBlobClient(containerName);
-
+                BlobClient blob = container.GetBlobClient(nombreArchivo);
                 if (await blob.ExistsAsync())
                 {
-                    return  blob.OpenReadAsync().ToString();
-                }
 
-                return "NOok";
+                    using (var fileStream = System.IO.File.OpenWrite(downloadPath + "\\"+ nombreArchivo))
+                    {
+                        var salida = await blob.DownloadToAsync(fileStream);
+                        return salida;
+                    }
+
+                   
+                }
+                else {
+                    return null;
+                }
             }
             catch (Exception ex)
             {
@@ -48,35 +55,34 @@ namespace msStorage
             try
             {
                 string containerName = _configuration.GetValue<string>("AppSettings:ContainerName");
-                string blobName = _configuration.GetValue<string>("AppSettings:ContainerName");
-
+                string blobName = _configuration.GetValue<string>("AppSettings:PdfBlob");
+                string nomArchivo = filePath.Split("\\")[filePath.Split("\\").Length-1];
                 BlobContainerClient container = new BlobContainerClient(_configuration.GetConnectionString("StorageConnectionString"), containerName);
-                BlobClient blob = container.GetBlobClient(blobName);
-
+                BlobClient blob = container.GetBlobClient(blobName+ nomArchivo);
                 var salida = await blob.UploadAsync(filePath);
-
                 return salida;
             }
             catch (Exception ex)
             {
-
                 throw;
             }
         }
 
-        public async Task<string> ImagenGetAll()
+        public async Task<IEnumerable< Azure.Page<BlobItem>>> ImagenGetAll()
         {
             try
             {
                 string containerName = _configuration.GetValue<string>("AppSettings:ContainerName");
                 BlobContainerClient container = new BlobContainerClient(_configuration.GetConnectionString("StorageConnectionString"), containerName);
-
                 await container.CreateIfNotExistsAsync();
-
-                string salida = "";
-                foreach (BlobItem blobSt in container.GetBlobs())
+                var salida = container.GetBlobs().AsPages(default, null);
+                string ver = "";
+                foreach (Azure.Page< BlobItem> blobPage in salida)
                 {
-                    salida = salida +"--"+ blobSt.Name;
+                    foreach (BlobItem blobItem in blobPage.Values)
+                    {
+                        ver = ver + "--" + blobItem.Name;
+                    }
                 }
 
                 return salida;

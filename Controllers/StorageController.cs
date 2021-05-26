@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using msStorage.Entities;
 using Microsoft.Extensions.Configuration;
+using Azure.Storage.Blobs;
 
+using Azure.Storage.Blobs.Models;
 using ProblemDetails = msStorage.Entities.ProblemDetails;
 using NotFoundResult = msStorage.Entities.NotFoundResult;
 
@@ -23,38 +25,37 @@ namespace msStorage.Controllers
             _iConfig = _Configuration;
         }
 
-        [HttpPost("ImagenGetId")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [HttpPost("PdfGetNombre")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Azure.Response))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public  ActionResult<string> ImagenGetId(string id)
+        public  async Task<ActionResult<Azure.Response>> PdfGetNombre(string nombreArchivo, string downloadPath)
         {
             try
             {
-                if (id == null) return BadRequest(ModelState);
+                if (nombreArchivo == null || downloadPath == null) return BadRequest(ModelState);
                 StorageService miStorageService = new StorageService(_iConfig);
-                var salida = miStorageService.ImagenGetId(id);
+                var salida = await miStorageService.PdfGetNombre( nombreArchivo,  downloadPath);
                 if (salida == null) return NotFound();
                 return Ok(salida);
             }
             catch (System.Exception ex)
             {
-
                 throw;
             }
         }
         [HttpPost("ImagenGetAll")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Azure.Page<BlobItem>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public ActionResult<string> ImagenGetAll()
+        public async Task<ActionResult<IEnumerable<Azure.Page<BlobItem>>>> ImagenGetAll()
         {
             try
             {
                 StorageService miStorageService = new StorageService(_iConfig);
-                var salida = miStorageService.ImagenGetAll();
+                var salida =  await miStorageService.ImagenGetAll();
                 if (salida == null) return NotFound();
                 return Ok(salida);
             }
@@ -66,25 +67,23 @@ namespace msStorage.Controllers
         }
 
         [HttpPost("ImagenSave")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Azure.Response<Azure.Storage.Blobs.Models.BlobContentInfo>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundResult))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public ActionResult<Task<Azure.Response<Azure.Storage.Blobs.Models.BlobContentInfo>>> ImagenSave(string filePath)
+        public async Task<ActionResult<Task<Azure.Response<Azure.Storage.Blobs.Models.BlobContentInfo>>>> ImagenSave(string filePath)
         {
             try
             {
-        
                 if (filePath == null) return BadRequest(ModelState);
 
                 StorageService miStorageService = new StorageService(_iConfig);
-                var salida = miStorageService.ImagenSave(filePath);
+                var salida = await miStorageService.ImagenSave(filePath);
                 if (salida == null) return NotFound();
                 return Ok(salida);
             }
             catch (System.Exception ex)
             {
-
                 throw;
             }
         }
