@@ -33,5 +33,5 @@ jobs:
           username: homeworkregistry
           password: ${{ secrets.REGISTRY_SECRET }}
       - run: |
-          docker build . -t homeworkregistry.azurecr.io/msStorage:dev-lastest
+          docker build . -t homeworkregistry.azurecr.io/msstorage:dev-lastest
           docker push homeworkregistry.azurecr.io/msstorage:dev-lastest
