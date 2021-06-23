@@ -29,9 +29,9 @@ jobs:
       - name: Push imagen registry
         uses: azure/docker-login@v1
         with:
-          login-server: homeworkregistry.azurecr.io
-          username: homeworkregistry
+          login-server: goopen.azurecr.io
+          username: goopen
           password: ${{ secrets.REGISTRY_SECRET }}
       - run: |
-          docker build . -t homeworkregistry.azurecr.io/msstorage:dev-lastest
-          docker push homeworkregistry.azurecr.io/msstorage:dev-lastest
+            docker build . -t goopen.azurecr.io/msstorage:dev-lastest
+            docker push goopen.azurecr.io/msstorage:dev-lastest 
