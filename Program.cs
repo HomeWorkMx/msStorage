@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Winton.Extensions.Configuration.Consul;
 
 namespace msStorage
@@ -16,6 +12,7 @@ namespace msStorage
         {
             CreateHostBuilder(args).Build().Run();
         }
+
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             var config = new ConfigurationBuilder()
@@ -36,10 +33,7 @@ namespace msStorage
                 Console.WriteLine($"CONSULKEY  :{consulKey}");
                 var path = $"{consulDir}/{consulKey}";
                 Console.WriteLine(path);
-                //set CONSULHOST=https://consul.bmlabs.cl/
-                //set CONSULTOKEN=b0b001af-b34e-5863-4bd1-de1949382970
-                //set CONSULDIR=configuracionhw
-                //set CONSULKEY=appsettingsApiAuthentication.json
+
                 return Host
                       .CreateDefaultBuilder(args)
                       .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>())
