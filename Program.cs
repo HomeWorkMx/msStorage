@@ -23,6 +23,8 @@ namespace msStorage
             var consulToken = Environment.GetEnvironmentVariable("CONSULTOKEN");
             var consulDir = Environment.GetEnvironmentVariable("CONSULDIR");
             var consulKey = Environment.GetEnvironmentVariable("CONSULKEY");
+
+
             if (!string.IsNullOrEmpty(consulHost) && !string.IsNullOrEmpty(consulToken) && !string.IsNullOrEmpty(consulDir) && !string.IsNullOrEmpty(consulKey))
             {
                 Console.WriteLine("CONFIGURACION DESDE CONSUL");
